@@ -32,3 +32,6 @@ tfplan.out
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore the terraform binary
+terraform
