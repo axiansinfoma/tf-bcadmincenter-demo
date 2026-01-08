@@ -21,6 +21,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+  resource_provider_registrations = "none"
 }
 
 # get the tenant id from the currently authenticated AzureRM client
