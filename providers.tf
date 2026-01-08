@@ -22,3 +22,10 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
+# get the tenant id from the currently authenticated AzureRM client
+data "azurerm_client_config" "current" {}
+
+provider "bcadmincenter" {
+  tenant_id = data.azurerm_client_config.current.tenant_id
+}
