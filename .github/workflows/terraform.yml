@@ -81,7 +81,8 @@ jobs:
           -backend-config="storage_account_name=${{ secrets.BACKEND_STORAGE_ACCOUNT_NAME }}" \
           -backend-config="container_name=${{ secrets.BACKEND_CONTAINER_NAME }}" \
           -backend-config="key=${{ secrets.BACKEND_KEY }}" \
-          -backend-config="use_azuread_auth=true"
+          -backend-config="use_azuread_auth=true" \
+          -lock-timeout=60s
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
     - name: Terraform Format
@@ -218,7 +219,8 @@ jobs:
           -backend-config="storage_account_name=${{ secrets.BACKEND_STORAGE_ACCOUNT_NAME }}" \
           -backend-config="container_name=${{ secrets.BACKEND_CONTAINER_NAME }}" \
           -backend-config="key=${{ secrets.BACKEND_KEY }}" \
-          -backend-config="use_azuread_auth=true"
+          -backend-config="use_azuread_auth=true" \
+          -lock-timeout=60s
 
     # Download saved plan from artifacts  
     - name: Download Terraform Plan
