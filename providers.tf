@@ -10,10 +10,10 @@ terraform {
       source  = "hashicorp/random"
       version = "3.7.2"
     }
-    # bcadmincenter = {
-    #   source  = "vllni/bcadmincenter"
-    #   version = "0.0.0"
-    # }
+    bcadmincenter = {
+      source  = "vllni/bcadmincenter"
+      version = "0.0.1"
+    }
   }
   required_version = "1.14.3"
   backend "azurerm" {}
