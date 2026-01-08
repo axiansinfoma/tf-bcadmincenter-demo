@@ -1,5 +1,6 @@
 # Local .terraform directories
 **/.terraform/*
+**/.terraform.d/*
 
 # .tfstate files
 *.tfstate
@@ -32,3 +33,6 @@ tfplan.out
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore the terraform binary
+terraform
