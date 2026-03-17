@@ -41,6 +41,7 @@ jobs:
     # Read Terraform version from providers.tf
     - name: Get Terraform Version
       id: get-tf-version
+      working-directory: ./src
       run: |
         TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' providers.tf)
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
@@ -164,8 +165,9 @@ jobs:
     # Read Terraform version from providers.tf
     - name: Get Terraform Version
       id: get-tf-version
+      working-directory: ./src
       run: |
-        TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' src/providers.tf)
+        TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' providers.tf)
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
         echo "Using Terraform version: $TF_VERSION"
 
