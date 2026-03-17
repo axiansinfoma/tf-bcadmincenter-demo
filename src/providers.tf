@@ -8,7 +8,7 @@ terraform {
     }
     bcadmincenter = {
       source  = "axiansinfoma/bcadmincenter"
-      version = "0.1.4"
+      version = "0.1.5"
     }
   }
   required_version = "1.14.7"
