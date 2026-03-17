@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.65.0"
+      version = "4.64.0"
     }
     bcadmincenter = {
       source  = "axiansinfoma/bcadmincenter"
