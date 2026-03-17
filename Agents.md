@@ -37,7 +37,7 @@ This repository manages infrastructure for Business Central Admin Center environ
 
 - Backend state stored in Azure Storage Account (configured via secrets)
 - Uses OIDC authentication with Azure AD
-- Resource naming follows pattern: `<type>-bc-demo-mivi`
+- Resource naming follows pattern: `<type>-demo-prd-<component>`
 
 ## Workflow Guidelines
 
