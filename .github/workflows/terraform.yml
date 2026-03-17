@@ -55,6 +55,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: ./src
       run: |
         terraform init \
           -backend-config="resource_group_name=${{ secrets.BACKEND_RESOURCE_GROUP_NAME }}" \
@@ -72,6 +73,7 @@ jobs:
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
       id: tf-plan
+      working-directory: ./src
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -out tfplan || export exitcode=$?
@@ -90,11 +92,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tfplan
-        path: tfplan
+        path: ./src/tfplan
         
     # Create string output of Terraform Plan
     - name: Create String Output
       id: tf-plan-string
+      working-directory: ./src
       run: |
         TERRAFORM_PLAN=$(terraform show -no-color tfplan)
         
@@ -162,7 +165,7 @@ jobs:
     - name: Get Terraform Version
       id: get-tf-version
       run: |
-        TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' providers.tf)
+        TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' src/providers.tf)
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
         echo "Using Terraform version: $TF_VERSION"
 
@@ -175,6 +178,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: ./src
       run: |
         terraform init \
           -backend-config="resource_group_name=${{ secrets.BACKEND_RESOURCE_GROUP_NAME }}" \
@@ -189,7 +193,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: tfplan
+        path: ./src/tfplan
 
     # Terraform Apply
     - name: Terraform Apply
+      working-directory: ./src
       run: terraform apply -auto-approve tfplan
