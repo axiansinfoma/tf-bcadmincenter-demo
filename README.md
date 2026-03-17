@@ -1,12 +1,12 @@
 # Business Central Admin Center Terraform Demo
 
-This repository demonstrates infrastructure management for Microsoft Dynamics 365 Business Central environments using Terraform with a custom provider for the Business Central Admin Center API.
+This repository demonstrates infrastructure management for Microsoft Dynamics 365 Business Central environments using Terraform with the published `bcadmincenter` provider for the Business Central Admin Center API.
 
 ## Architecture
 
 The repository uses:
 - **Terraform** `1.14.3` for infrastructure as code
-- **Custom bcadmincenter provider** `0.0.1` for Business Central environment management
+- **bcadmincenter provider** `0.0.1` from Terraform Registry (`vllni/bcadmincenter`) for Business Central environment management
 - **Azure provider** `4.48.0` for Azure infrastructure
 - **GitHub Actions** for CI/CD automation
 - **Azure Storage** for Terraform state backend
@@ -23,23 +23,24 @@ The repository uses:
 
 ```
 .
-├── bin/
-│   └── terraform-provider-bcadmincenter    # Custom provider binary
 ├── .github/
 │   └── workflows/
 │       └── terraform.yml                    # CI/CD pipeline
-├── application_insights.tf                  # Azure monitoring resources
-├── environment.tf                           # BC environment configuration
-├── providers.tf                             # Provider configuration
-└── vars.tf                                  # Variable declarations
+└── src/
+   ├── environment.tf                       # BC environment configuration
+   ├── providers.tf                         # Provider configuration
+   └── vars.tf                              # Variable declarations
 ```
 
 ## Using Terraform
 
 ### Local Development
 
+Run Terraform commands from the `src/` directory:
+
 1. **Initialize Terraform**
    ```bash
+   cd src
    terraform init \
      -backend-config="resource_group_name=<rg-name>" \
      -backend-config="storage_account_name=<storage-name>" \
@@ -48,48 +49,22 @@ The repository uses:
      -backend-config="use_azuread_auth=true"
    ```
 
-2. **Install Custom Provider**
-   
-   The `bcadmincenter` provider binary must be installed locally:
-   ```bash
-   # Create plugin directory
-   PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/vllni/bcadmincenter/0.0.1/linux_amd64"
-   mkdir -p "${PLUGIN_DIR}"
-   
-   # Copy provider binary
-   cp bin/terraform-provider-bcadmincenter "${PLUGIN_DIR}/"
-   chmod +x "${PLUGIN_DIR}/terraform-provider-bcadmincenter"
-   
-   # Create CLI configuration
-   cat > "${HOME}/.terraformrc" <<EOF
-   provider_installation {
-     filesystem_mirror {
-       path    = "${HOME}/.terraform.d/plugins"
-       include = ["registry.terraform.io/vllni/bcadmincenter"]
-     }
-     direct {
-       exclude = ["registry.terraform.io/vllni/bcadmincenter"]
-     }
-   }
-   EOF
-   ```
-
-3. **Validate Configuration**
+2. **Validate Configuration**
    ```bash
    terraform validate
    ```
 
-4. **Format Code**
+3. **Format Code**
    ```bash
    terraform fmt
    ```
 
-5. **Plan Changes**
+4. **Plan Changes**
    ```bash
    terraform plan
    ```
 
-6. **Apply Changes**
+5. **Apply Changes**
    ```bash
    terraform apply
    ```
@@ -115,7 +90,6 @@ The repository uses GitHub Actions for automated Terraform workflows.
 
 1. **On Pull Request**:
    - Checks out code
-   - Installs custom bcadmincenter provider
    - Initializes Terraform with remote backend
    - Validates formatting (`terraform fmt -check`)
    - Generates execution plan (`terraform plan`)
@@ -135,8 +109,8 @@ The repository uses GitHub Actions for automated Terraform workflows.
 
 ### Pipeline Features
 
-- Automatic Terraform version detection from [providers.tf](providers.tf)
-- Custom provider installation from repository binary
+- Automatic Terraform version detection from [src/providers.tf](src/providers.tf)
+- Provider download from Terraform Registry during `terraform init`
 - Azure authentication via OIDC (no stored credentials)
 - Plan output published to PR comments and job summaries
 - Conditional apply only when infrastructure changes exist

@@ -40,28 +40,6 @@ jobs:
       with:
         clean: false
 
-    # Install local bcadmincenter provider binary
-    - name: Install bcadmincenter provider
-      run: |
-        # Create plugin directory structure: registry.terraform.io/<namespace>/<type>/<version>/<os_arch>/
-        PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/vllni/bcadmincenter/0.0.1/linux_amd64"
-        mkdir -p "${PLUGIN_DIR}"
-        cp bin/terraform-provider-bcadmincenter "${PLUGIN_DIR}/"
-        chmod +x "${PLUGIN_DIR}/terraform-provider-bcadmincenter"
-        
-        # Create CLI configuration to use local provider
-        cat > "${HOME}/.terraformrc" <<EOF
-        provider_installation {
-          filesystem_mirror {
-            path    = "${HOME}/.terraform.d/plugins"
-            include = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-          direct {
-            exclude = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-        }
-        EOF
-
     # Read Terraform version from providers.tf
     - name: Get Terraform Version
       id: get-tf-version
@@ -181,28 +159,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         clean: false
-
-    # Install local bcadmincenter provider binary
-    - name: Install bcadmincenter provider
-      run: |
-        # Create plugin directory structure
-        PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/vllni/bcadmincenter/0.0.1/linux_amd64"
-        mkdir -p "${PLUGIN_DIR}"
-        cp bin/terraform-provider-bcadmincenter "${PLUGIN_DIR}/"
-        chmod +x "${PLUGIN_DIR}/terraform-provider-bcadmincenter"
-        
-        # Create CLI configuration to use local provider
-        cat > "${HOME}/.terraformrc" <<EOF
-        provider_installation {
-          filesystem_mirror {
-            path    = "${HOME}/.terraform.d/plugins"
-            include = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-          direct {
-            exclude = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-        }
-        EOF
 
     # Read Terraform version from providers.tf
     - name: Get Terraform Version

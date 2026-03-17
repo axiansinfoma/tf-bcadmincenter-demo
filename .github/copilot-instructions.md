@@ -2,15 +2,15 @@
 
 ## Project Overview
 
-This repository manages infrastructure for Business Central Admin Center environments using Terraform with a custom provider (`bcadmincenter`).
+This repository manages infrastructure for Business Central Admin Center environments using Terraform with the published `bcadmincenter` provider.
 
 ## Code Standards
 
-- **Terraform Version**: Use version `1.14.3` as specified in [providers.tf](providers.tf)
+- **Terraform Version**: Use version `1.14.3` as specified in [src/providers.tf](src/providers.tf)
 - **Formatting**: Always run `terraform fmt` before committing
 - **Providers**: 
   - AzureRM `4.48.0` for Azure resources
-  - Custom `bcadmincenter` provider `0.0.1` (local binary in `bin/`)
+   - `bcadmincenter` provider `0.0.1` from Terraform Registry (`vllni/bcadmincenter`)
   - Random provider `3.7.2` for generating random values
 
 ## Commit Conventions
@@ -27,7 +27,7 @@ This repository manages infrastructure for Business Central Admin Center environ
 
 ### bcadmincenter Provider
 
-- Source: Local binary in `bin/terraform-provider-bcadmincenter`
+- Source: Terraform Registry (`vllni/bcadmincenter`)
 - Resources available:
   - `bcadmincenter_environment` - BC environment management
   - `bcadmincenter_environment_settings` - BC environment configuration
@@ -61,11 +61,10 @@ This repository manages infrastructure for Business Central Admin Center environ
 
 ## File Organization
 
-- `providers.tf` - Provider configurations and versions
-- `vars.tf` - Variable declarations
-- `environment.tf` - BC environment resources
-- `application_insights.tf` - Azure monitoring resources
-- `bin/` - Local provider binaries
+- `src/providers.tf` - Provider configurations and versions
+- `src/vars.tf` - Variable declarations
+- `src/environment.tf` - BC environment resources
+- Run Terraform commands from the `src/` directory
 
 ## Best Practices
 
