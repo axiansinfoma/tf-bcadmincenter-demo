@@ -6,12 +6,11 @@ This repository manages infrastructure for Business Central Admin Center environ
 
 ## Code Standards
 
-- **Terraform Version**: Use version `1.14.3` as specified in [src/providers.tf](src/providers.tf)
+- **Terraform Version**: Use version `1.14.7` as specified in [src/providers.tf](src/providers.tf)
 - **Formatting**: Always run `terraform fmt` before committing
 - **Providers**: 
-  - AzureRM `4.48.0` for Azure resources
-   - `bcadmincenter` provider `0.0.1` from Terraform Registry (`vllni/bcadmincenter`)
-  - Random provider `3.7.2` for generating random values
+  - AzureRM `4.64.0` for Azure resources
+   - `bcadmincenter` provider `0.1.5` from Terraform Registry (`axiansinfoma/bcadmincenter`)
 
 ## Commit Conventions
 
@@ -27,7 +26,7 @@ This repository manages infrastructure for Business Central Admin Center environ
 
 ### bcadmincenter Provider
 
-- Source: Terraform Registry (`vllni/bcadmincenter`)
+- Source: Terraform Registry (`axiansinfoma/bcadmincenter`)
 - Resources available:
   - `bcadmincenter_environment` - BC environment management
   - `bcadmincenter_environment_settings` - BC environment configuration
@@ -51,9 +50,9 @@ This repository manages infrastructure for Business Central Admin Center environ
    - Apply runs only on merge to `main` when changes detected
 
 3. **Required Secrets** (configured in GitHub environment `production`):
-   - `AZURE_CLIENT_ID` - Azure service principal client ID
-   - `AZURE_SUBSCRIPTION_ID` - Azure subscription ID
-   - `AZURE_TENANT_ID` - Azure tenant ID
+   - `ARM_CLIENT_ID` - Azure service principal client ID
+   - `ARM_SUBSCRIPTION_ID` - Azure subscription ID
+   - `ARM_TENANT_ID` - Azure tenant ID
    - `BACKEND_RESOURCE_GROUP_NAME` - Backend storage resource group
    - `BACKEND_STORAGE_ACCOUNT_NAME` - Backend storage account
    - `BACKEND_CONTAINER_NAME` - Backend storage container
