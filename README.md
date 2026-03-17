@@ -5,16 +5,16 @@ This repository demonstrates infrastructure management for Microsoft Dynamics 36
 ## Architecture
 
 The repository uses:
-- **Terraform** `1.14.3` for infrastructure as code
-- **bcadmincenter provider** `0.0.1` from Terraform Registry (`vllni/bcadmincenter`) for Business Central environment management
-- **Azure provider** `4.48.0` for Azure infrastructure
+- **Terraform** `1.14.7` for infrastructure as code
+- **bcadmincenter provider** `0.1.5` from Terraform Registry (`axiansinfoma/bcadmincenter`) for Business Central environment management
+- **Azure provider** `4.64.0` for Azure infrastructure
 - **GitHub Actions** for CI/CD automation
 - **Azure Storage** for Terraform state backend
 - **OIDC authentication** for secure Azure access
 
 ## Prerequisites
 
-- Terraform `1.14.3`
+- Terraform `1.14.7`
 - Azure subscription with appropriate permissions
 - Azure AD tenant with Business Central Admin Center access
 - GitHub repository with configured secrets and environment
@@ -125,9 +125,9 @@ The pipeline uses a GitHub environment named `production` for deployment protect
 
 | Secret Name | Description |
 |-------------|-------------|
-| `AZURE_CLIENT_ID` | Azure AD service principal application ID |
-| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
-| `AZURE_TENANT_ID` | Azure AD tenant ID |
+| `ARM_CLIENT_ID` | Azure AD service principal application ID |
+| `ARM_SUBSCRIPTION_ID` | Azure subscription ID |
+| `ARM_TENANT_ID` | Azure AD tenant ID |
 | `BACKEND_RESOURCE_GROUP_NAME` | Resource group containing state storage |
 | `BACKEND_STORAGE_ACCOUNT_NAME` | Storage account for Terraform state |
 | `BACKEND_CONTAINER_NAME` | Blob container for state files |
