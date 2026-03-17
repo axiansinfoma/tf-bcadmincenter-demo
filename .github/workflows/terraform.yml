@@ -18,17 +18,11 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-    environment:
-      name: production
     env:
-      # Azure authentication for Terraform (from production environment)
+      # Azure authentication for Terraform
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
       ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
       ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-      AZURE_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-      AZURE_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
-      AZURE_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-      AZURE_USE_OIDC: true
       ARM_USE_OIDC: true
     outputs:
       tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
@@ -40,31 +34,10 @@ jobs:
       with:
         clean: false
 
-    # Install local bcadmincenter provider binary
-    - name: Install bcadmincenter provider
-      run: |
-        # Create plugin directory structure: registry.terraform.io/<namespace>/<type>/<version>/<os_arch>/
-        PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/vllni/bcadmincenter/0.0.1/linux_amd64"
-        mkdir -p "${PLUGIN_DIR}"
-        cp bin/terraform-provider-bcadmincenter "${PLUGIN_DIR}/"
-        chmod +x "${PLUGIN_DIR}/terraform-provider-bcadmincenter"
-        
-        # Create CLI configuration to use local provider
-        cat > "${HOME}/.terraformrc" <<EOF
-        provider_installation {
-          filesystem_mirror {
-            path    = "${HOME}/.terraform.d/plugins"
-            include = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-          direct {
-            exclude = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-        }
-        EOF
-
     # Read Terraform version from providers.tf
     - name: Get Terraform Version
       id: get-tf-version
+      working-directory: ./src
       run: |
         TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' providers.tf)
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
@@ -79,6 +52,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: ./src
       run: |
         terraform init \
           -backend-config="resource_group_name=${{ secrets.BACKEND_RESOURCE_GROUP_NAME }}" \
@@ -96,6 +70,7 @@ jobs:
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
       id: tf-plan
+      working-directory: ./src
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -out tfplan || export exitcode=$?
@@ -114,11 +89,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tfplan
-        path: tfplan
+        path: ./src/tfplan
         
     # Create string output of Terraform Plan
     - name: Create String Output
       id: tf-plan-string
+      working-directory: ./src
       run: |
         TERRAFORM_PLAN=$(terraform show -no-color tfplan)
         
@@ -168,10 +144,6 @@ jobs:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
       ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
       ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-      AZURE_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
-      AZURE_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-      AZURE_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-      AZURE_USE_OIDC: true
       ARM_USE_OIDC: true
     needs: [terraform-plan]
     
@@ -182,31 +154,10 @@ jobs:
       with:
         clean: false
 
-    # Install local bcadmincenter provider binary
-    - name: Install bcadmincenter provider
-      run: |
-        # Create plugin directory structure
-        PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/vllni/bcadmincenter/0.0.1/linux_amd64"
-        mkdir -p "${PLUGIN_DIR}"
-        cp bin/terraform-provider-bcadmincenter "${PLUGIN_DIR}/"
-        chmod +x "${PLUGIN_DIR}/terraform-provider-bcadmincenter"
-        
-        # Create CLI configuration to use local provider
-        cat > "${HOME}/.terraformrc" <<EOF
-        provider_installation {
-          filesystem_mirror {
-            path    = "${HOME}/.terraform.d/plugins"
-            include = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-          direct {
-            exclude = ["registry.terraform.io/vllni/bcadmincenter"]
-          }
-        }
-        EOF
-
     # Read Terraform version from providers.tf
     - name: Get Terraform Version
       id: get-tf-version
+      working-directory: ./src
       run: |
         TF_VERSION=$(grep -oP 'required_version\s*=\s*"\K[^"]+' providers.tf)
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
@@ -221,6 +172,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: ./src
       run: |
         terraform init \
           -backend-config="resource_group_name=${{ secrets.BACKEND_RESOURCE_GROUP_NAME }}" \
@@ -235,7 +187,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: tfplan
+        path: ./src/tfplan
 
     # Terraform Apply
     - name: Terraform Apply
+      working-directory: ./src
       run: terraform apply -auto-approve tfplan
